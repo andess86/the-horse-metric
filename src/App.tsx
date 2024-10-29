@@ -6,8 +6,6 @@ import "./App.css";
 function App() {
   const BOARD_SIZE = 50;
 
-  const [count, setCount] = useState(50);
-  // const [horseLocation, setHorseLocation] = useState({ i: 0, j: 0 });
   const [distances, setDistances] = useState(
     Array(BOARD_SIZE)
       .fill()
@@ -28,35 +26,16 @@ function App() {
   const isValidPosition = (row, col) => {
     return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
   };
-  const rows = 4;
-  const columns = 5;
-  let my2DArray = Array(count)
-    .fill()
-    .map(() => Array(count).fill(0));
+  let my2DArray = Array(BOARD_SIZE)
+    .fill(0)
+    .map(() => Array(BOARD_SIZE).fill(0));
   console.log(my2DArray);
 
-  // const setupMatrix = () => {};
-  // useEffect(() => {
-  //   console.log(my2DArray);
-  // });
-
-  // useEffect(() => {
-  //   console.log(horseLocation);
-  // }, [horseLocation]);
-
-  // Get color based on distance
   const getBackgroundColor = (distance) => {
-    if (distance === Infinity) return "#ffcccc";
     const intensity = Math.max(0, 255 - distance * 10);
     return `rgb(${intensity}, ${intensity}, 150)`;
   };
-  const getColor = (distance) => {
-    if (distance === Infinity) return "#ffcccc";
-    const intensity = Math.max(0, 255 - distance * 10);
-    return `rgb( ${intensity}, 100,  ${intensity})`;
-  };
 
-  // Calculate minimum moves to reach each square using BFS
   const calculateDistances = (startRow, startCol) => {
     const newDistances = Array(BOARD_SIZE)
       .fill(0)
@@ -105,7 +84,7 @@ function App() {
                     style={{
                       display: "block",
                       fontSize: "0.8em",
-                      color: getColor(distances[i][j]),
+                      color: "black",
                     }}
                     onClick={() => calculateDistances(i, j)}
                   >
@@ -118,8 +97,8 @@ function App() {
       </div>
 
       {/* <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={() => setBOARD_SIZE((BOARD_SIZE) => BOARD_SIZE + 1)}>
+          BOARD_SIZE is {BOARD_SIZE}
         </button>
       </div> */}
     </>
