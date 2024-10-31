@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function App() {
   const BOARD_SIZE = 50;
@@ -23,10 +23,6 @@ function App() {
   const isValidPosition = (row, col) => {
     return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
   };
-  let my2DArray = Array(BOARD_SIZE)
-    .fill(0)
-    .map(() => Array(BOARD_SIZE).fill(0));
-  console.log(my2DArray);
 
   const getBackgroundColor = (distance) => {
     const intensity = Math.max(0, 255 - distance * 10);
@@ -65,8 +61,8 @@ function App() {
   return (
     <>
       <div style={{ display: "flex" }}>
-        {my2DArray &&
-          my2DArray.map((row, i) => (
+        {distances &&
+          distances.map((row, i) => (
             <div style={{}}>
               {row.map((col, j) => (
                 <div
@@ -92,12 +88,6 @@ function App() {
             </div>
           ))}
       </div>
-
-      {/* <div className="card">
-        <button onClick={() => setBOARD_SIZE((BOARD_SIZE) => BOARD_SIZE + 1)}>
-          BOARD_SIZE is {BOARD_SIZE}
-        </button>
-      </div> */}
     </>
   );
 }
