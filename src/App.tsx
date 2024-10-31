@@ -113,7 +113,7 @@ function App() {
         }}
       >
         {distances.map((row, i) =>
-          row.map((col, j) => (
+          row.map((_col, j) => (
             <div
               key={`${i}-${j}`}
               style={{
