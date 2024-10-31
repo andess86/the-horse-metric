@@ -1,15 +1,18 @@
 import { useState } from "react";
 
+type Position = [number, number];
+type DistanceGrid = number[][];
+
 function App() {
   const BOARD_SIZE = 50;
 
-  const [distances, setDistances] = useState(
+  const [distances, setDistances] = useState<DistanceGrid>(
     Array(BOARD_SIZE)
-      .fill()
+      .fill(0)
       .map(() => Array(BOARD_SIZE).fill(0))
   );
 
-  const KNIGHT_MOVES = [
+  const KNIGHT_MOVES: Position[] = [
     [-2, -1],
     [-2, 1],
     [-1, -2],
@@ -20,25 +23,25 @@ function App() {
     [2, 1],
   ];
 
-  const isValidPosition = (row, col) => {
+  const isValidPosition = (row: number, col: number): boolean => {
     return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
   };
 
-  const getBackgroundColor = (distance) => {
+  const getBackgroundColor = (distance: number): string => {
     const intensity = Math.max(0, 255 - distance * 10);
     return `rgb(${intensity}, ${intensity}, 150)`;
   };
 
-  const calculateDistances = (startRow, startCol) => {
+  const calculateDistances = (startRow: number, startCol: number): void => {
     const newDistances = Array(BOARD_SIZE)
       .fill(0)
       .map(() => Array(BOARD_SIZE).fill(Infinity));
     newDistances[startRow][startCol] = 0;
 
-    const queue = [[startRow, startCol]];
+    const queue: Position[] = [[startRow, startCol]];
 
     while (queue.length > 0) {
-      const [currentRow, currentCol] = queue.shift();
+      const [currentRow, currentCol] = queue.shift()!;
       const currentDistance = newDistances[currentRow][currentCol];
 
       for (const [moveRow, moveCol] of KNIGHT_MOVES) {
