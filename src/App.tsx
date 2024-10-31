@@ -16,7 +16,7 @@ function App() {
       const height = window.innerHeight;
 
       const newCols = Math.floor(width / CELL_SIZE) - 2;
-      const newRows = Math.floor(height / CELL_SIZE) - 3;
+      const newRows = Math.floor(height / CELL_SIZE) - 1;
 
       setCols(newCols);
       setRows(newRows);
@@ -49,7 +49,14 @@ function App() {
     return row >= 0 && row < rows && col >= 0 && col < cols;
   };
 
-  const getBackgroundColor = (distance: number): string => {
+  const getBackgroundColor = (
+    distance: number,
+    row: number,
+    col: number
+  ): string => {
+    const baseColor = (row + col) % 2 === 0 ? "white" : "black";
+    if (distance === 0) return baseColor;
+
     const intensity = Math.max(0, 255 - distance * 10);
     return `rgb(${intensity}, ${intensity}, 150)`;
   };
@@ -88,18 +95,21 @@ function App() {
       style={{
         display: "flex",
         justifyContent: "center",
+
         alignItems: "center",
         minHeight: "100vh",
       }}
     >
       <div
         style={{
+          justifyContent: "center",
+          alignItems: "center",
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, ${CELL_SIZE}px)`,
           gridTemplateRows: `repeat(${rows}, ${CELL_SIZE}px)`,
           gap: "1px",
           width: "100vw",
-          height: "100vh",
+          height: "100%",
         }}
       >
         {distances.map((row, i) =>
@@ -107,7 +117,7 @@ function App() {
             <div
               key={`${i}-${j}`}
               style={{
-                backgroundColor: getBackgroundColor(distances[i][j]),
+                backgroundColor: getBackgroundColor(distances[i][j], i, j),
                 border: "1px solid lightgrey",
                 width: "100%",
                 height: "100%",
@@ -125,7 +135,7 @@ function App() {
                   color: "black",
                 }}
               >
-                {distances[i][j]}
+                {distances[i][j] > 0 ? distances[i][j] : null}
               </div>
             </div>
           ))
