@@ -1,16 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type Position = [number, number];
 type DistanceGrid = number[][];
 
 function App() {
-  const BOARD_SIZE = 50;
+  const CELL_SIZE = 30;
 
-  const [distances, setDistances] = useState<DistanceGrid>(
-    Array(BOARD_SIZE)
-      .fill(0)
-      .map(() => Array(BOARD_SIZE).fill(0))
-  );
+  const [rows, setRows] = useState(0);
+  const [cols, setCols] = useState(0);
+  const [distances, setDistances] = useState<DistanceGrid>([]);
+
+  useEffect(() => {
+    const updateGridSize = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      const newCols = Math.floor(width / CELL_SIZE) - 2;
+      const newRows = Math.floor(height / CELL_SIZE) - 3;
+
+      setCols(newCols);
+      setRows(newRows);
+
+      setDistances(
+        Array(newRows)
+          .fill(0)
+          .map(() => Array(newCols).fill(0))
+      );
+    };
+
+    updateGridSize();
+
+    window.addEventListener("resize", updateGridSize);
+    return () => window.removeEventListener("resize", updateGridSize);
+  }, []);
 
   const KNIGHT_MOVES: Position[] = [
     [-2, -1],
@@ -24,7 +46,7 @@ function App() {
   ];
 
   const isValidPosition = (row: number, col: number): boolean => {
-    return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
+    return row >= 0 && row < rows && col >= 0 && col < cols;
   };
 
   const getBackgroundColor = (distance: number): string => {
@@ -33,9 +55,9 @@ function App() {
   };
 
   const calculateDistances = (startRow: number, startCol: number): void => {
-    const newDistances = Array(BOARD_SIZE)
+    const newDistances = Array(rows)
       .fill(0)
-      .map(() => Array(BOARD_SIZE).fill(Infinity));
+      .map(() => Array(cols).fill(Infinity));
     newDistances[startRow][startCol] = 0;
 
     const queue: Position[] = [[startRow, startCol]];
@@ -62,36 +84,54 @@ function App() {
   };
 
   return (
-    <>
-      <div style={{ display: "flex" }}>
-        {distances &&
-          distances.map((row, i) => (
-            <div style={{}}>
-              {row.map((col, j) => (
-                <div
-                  style={{
-                    backgroundColor: getBackgroundColor(distances[i][j]),
-                    border: "1px lightgrey solid",
-                    width: "1em",
-                    height: "1em",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "block",
-                      fontSize: "0.8em",
-                      color: "black",
-                    }}
-                    onClick={() => calculateDistances(i, j)}
-                  >
-                    {distances[i][j]}
-                  </div>
-                </div>
-              ))}
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${cols}, ${CELL_SIZE}px)`,
+          gridTemplateRows: `repeat(${rows}, ${CELL_SIZE}px)`,
+          gap: "1px",
+          width: "100vw",
+          height: "100vh",
+        }}
+      >
+        {distances.map((row, i) =>
+          row.map((col, j) => (
+            <div
+              key={`${i}-${j}`}
+              style={{
+                backgroundColor: getBackgroundColor(distances[i][j]),
+                border: "1px solid lightgrey",
+                width: "100%",
+                height: "100%",
+                position: "relative",
+              }}
+              onClick={() => calculateDistances(i, j)}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  fontSize: "0.5em",
+                  color: "black",
+                }}
+              >
+                {distances[i][j]}
+              </div>
             </div>
-          ))}
+          ))
+        )}
       </div>
-    </>
+    </div>
   );
 }
 
